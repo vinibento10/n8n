@@ -1,0 +1,27 @@
+# Usa uma imagem Node estável
+FROM node:18-alpine
+
+# Instala dependências básicas e o Yarn 3
+RUN corepack enable && corepack prepare yarn@3.6.4 --activate
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia tudo do repositório
+COPY . .
+
+# Instala as dependências do n8n
+RUN yarn install --ignore-engines
+
+# Expõe a porta padrão do n8n
+EXPOSE 10000
+
+# Define variáveis padrão (você pode sobrescrever no Render)
+ENV N8N_BASIC_AUTH_ACTIVE=true
+ENV N8N_BASIC_AUTH_USER=admin
+ENV N8N_BASIC_AUTH_PASSWORD=senha123
+ENV N8N_PORT=10000
+ENV WEBHOOK_URL=https://clearai-n8n.onrender.com/
+
+# Comando de inicialização
+CMD ["yarn", "start"]
